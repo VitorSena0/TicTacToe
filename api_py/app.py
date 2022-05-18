@@ -12,7 +12,7 @@ def root():
 	return "root"
 
 @app.route("/api/request/storage-data",methods=['GET','POST'])
-def storage-data():
+def storage_data():
 	if request.methods == 'POST':
 		query = "INSERT INTO clients VALUES ({} , {} , {})".format(request.form['name'],request.form['age'],request.form['email'])
 		database = sqlite3.connect("main.db")
@@ -25,7 +25,7 @@ def storage-data():
 		return "This api not receive GET request ERRO 404"
 
 @app.route("/api/response/show-data",methods=['GET','POST'])
-def show-data():
+def show_data():
 	if request.methods == 'POST':
 		query = "SELECT * FROM clients"
 		database = sqlite3.connect("main.db")
