@@ -1,0 +1,37 @@
+body{
+	background:#ffffc8;
+}
+div#painel{
+	display: flex;
+	justify-content: center;
+	margin: 20px auto auto auto;
+	background-color: #554455;
+	width: 70%;
+	flex-direction: column;
+	height: 200px;
+	padding: 10px;
+}
+div#painel h1{
+	color: white;
+	margin: auto;
+	font: arial;
+}
+div#opitions{
+	display: grid;
+	width: 90%;
+	justify-content: center;
+	margin: auto;
+	grid-template-columns: 1fr;
+}
+div#opitions button{
+	width: 100%;
+	height: 30px;
+	margin-top: 20px;
+	border: solid 1px #776677;
+	background-color: #554455;
+	cursor: pointer;
+	color: white;
+}
+div#opitions button:hover{
+	background-color: #776677;
+}
