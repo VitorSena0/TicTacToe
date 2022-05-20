@@ -11,9 +11,24 @@
   <div id="painel">
     <h1>Welcome to TicTacToe</h1>
     <div id="opitions">
-      <button>Create Lobby</button>
-      <button>Enter in Lobby</button>
+      <button onclick="showForm(1)">Create Lobby</button>
+      <div class="form" id="f1">
+        <form>
+          <label for="lobbyName">Name Lobby:</label>
+          <input type="text" name="lobbyName">
+          <button >Create</button>
+        </form>
+      </div>
+      <button onclick="showForm(2)">Enter in Lobby</button>
+      <div class="form" id="f2">
+        <form>
+          <label for="lobbyName">Lobby Code:</label>
+          <input type="text" name="lobbyName">
+          <button>Enter</button>
+        </form>
+      </div>
     </div>
   </div>
+  <script type="text/javascript" src="/public/lobby.js"></script>
 </body>
 </html>
