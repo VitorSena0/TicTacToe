@@ -8,13 +8,15 @@ div#painel{
 	background-color: #554455;
 	width: 70%;
 	flex-direction: column;
-	height: 200px;
-	padding: 10px;
+	height: auto;
+	padding: 15px;
 }
 div#painel h1{
 	color: white;
 	margin: auto;
 	font: arial;
+	display: flex;
+	height: auto;
 }
 div#opitions{
 	display: grid;
@@ -34,4 +36,25 @@ div#opitions button{
 }
 div#opitions button:hover{
 	background-color: #776677;
+}
+div.form{
+    height: 60px;
+    margin: 18px auto auto auto;
+    display: flex;
+    justify-content: center;
+    color: white;
+}
+div.form form input{
+	background-color: #554455;
+	border: solid 1px #776677;
+	color: white;
+}
+div.form form input:focus{
+    outline: none;
+}
+#f1 {
+	display:none;
+}
+#f2 {
+	display:none;
 }
