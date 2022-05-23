@@ -179,7 +179,7 @@ canvas.addEventListener('mousemove', (e) => {
 	testX.innerHTML = x;
 	testY.innerHTML = y;
 })
-/*canvas.addEventListener('click', (e) => {
+canvas.addEventListener('click', (e) => {
 	tableAnalytics()
 	console.log(blockChoice)
 	if(choice == true){
@@ -349,178 +349,8 @@ canvas.addEventListener('mousemove', (e) => {
 		}
 	}
 	console.log(table)
-})*/
-function play(e){
-	tableAnalytics()
-	console.log(blockChoice)
-	if(choice == true){
-		choice = false
-	} else {
-		choice = true
-	}
-	
-	//line 1
-	if((x > 0 && x < 100) && (y > 0 && y < 100)){
-		if(blockChoice.A1 != true){
-			choiceDraw(1,choice)
-			blockChoice.A1 = true
-			if(choice == true){
-				table[0][0] = 'X'
-			} else {
-				table[0][0] = 'O'
-			}	
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	if((x > 100 && x < 200) && (y > 0 && y < 100)){
-		if(blockChoice.A2 != true){
-			choiceDraw(2,choice)
-			blockChoice.A2 = true
-			if(choice == true){
-				table[0][1] = 'X'
-			} else {
-				table[0][1] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	if((x > 200 && x < 300) && (y > 0 && y < 100)){
-		if(blockChoice.A3 != true){
-			choiceDraw(3,choice)
-			blockChoice.A3 = true
-			if(choice == true){
-				table[0][2] = 'X'
-			} else {
-				table[0][2] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	
-	//line 2
-	
-	if((x > 0 && x < 100) && (y > 100 && y < 200)){
-		if(blockChoice.A4 != true){
-			choiceDraw(4,choice)
-			blockChoice.A4 = true
-			if(choice == true){
-				table[1][0] = 'X'
-			} else {
-				table[1][0] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	if((x > 100 && x < 200) && (y > 100 && y < 200)){
-		if(blockChoice.A5 != true){
-			choiceDraw(5,choice)
-			blockChoice.A5 = true
-			if(choice == true){
-				table[1][1] = 'X'
-			} else {
-				table[1][1] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	if((x > 200 && x < 300) && (y > 100 && y < 200)){
-		if(blockChoice.A6 != true){
-			choiceDraw(6,choice)
-			blockChoice.A6 = true
-			if(choice == true){
-				table[1][2] = 'X'
-			} else {
-				table[1][2] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	
-	//line 3
-	
-	if((x > 0 && x < 100) && (y > 200 && y < 300)){
-		if(blockChoice.A7 != true){
-			choiceDraw(7,choice)
-			blockChoice.A7 = true
-			if(choice == true){
-				table[2][0] = 'X'
-			} else {
-				table[2][0] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	if((x > 100 && x < 200) && (y > 200 && y < 300)){
-		if(blockChoice.A8 != true){
-			choiceDraw(8,choice)
-			blockChoice.A8 = true
-			if(choice == true){
-				table[2][1] = 'X'
-			} else {
-				table[2][1] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	if((x > 200 && x < 300) && (y > 200 && y < 300)){
-		if(blockChoice.A9 != true){
-			choiceDraw(9,choice)
-			blockChoice.A9 = true
-			if(choice == true){
-				table[2][2] = 'X'
-			} else {
-				table[2][2] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
-				tableAnalytics()
-				plays = 0
-			}
-		}
-	}
-	console.log(table)
-}
+})
+
 function drawX(area){
 	switch(area){
 		case 1:
@@ -655,4 +485,31 @@ function reset(){
 	table = [[1,2,3],[4,5,6],[7,8,9]]
 	plays = 0
 }
+function tableAnalytics(){
+	let nA = new Analytics
+	if(nA.AnalyticGroup1.analytic() == 1){
 
+		reset()
+	} else if(nA.AnalyticGroup1.analytic() == 2){
+
+		reset()
+	}
+	if(nA.AnalyticGroup2.analytic() == 1){
+
+		reset()
+	} else if(nA.AnalyticGroup2.analytic() == 2){
+
+		reset()
+	}
+	if(nA.AnalyticGroup3.analytic() == 1){
+
+		reset()
+	} else if(nA.AnalyticGroup3.analytic() == 2){
+
+		reset()
+	}
+	if(plays == 9){
+
+		reset()
+	}
+}
