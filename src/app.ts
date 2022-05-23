@@ -69,7 +69,7 @@ app.post("/lobbys/",(req,res) => {
 
 app.post("/enterlobby",(req,res) => {
     let confirm2 = true;
-    tempname = req.body.Nameplay
+    tempname = req.body.Nameplayer
     for(let index = 0; index < rooms.length ; index += 1){
         if(req.body.lobbyName == rooms[index].code){
             res.redirect("/lobbys/"+req.body.lobbyName)
@@ -81,26 +81,13 @@ app.post("/enterlobby",(req,res) => {
         res.redirect("/")
     }
 })
-/*socket.on("connection",(client: any) => {
-    let code: any;
-    let player: any;
-    client.on("code", (resp: any) => {
-        code = resp.code
-        player = new Players(resp.name,code)
-        rooms.forEach((elem: any,index: any,array: any) => {
-            if(resp.code == elem){
-                console.log(rooms)
-                rooms[index].Lobby.connections = rooms[index].connections + 1
-                rooms[index].Lobby.players[player.id] = player
-                console.log(rooms)
-            }
-        })
-    })
-})*/
 
 server.listen(8000,() => {
-    console.clear()
-    console.log('rodando em http://localhost:8000')
+    setInterval(() => {
+        console.clear()
+        console.log('rodando em http://localhost:8000\n')
+        console.log(rooms)
+    },1000)
 })
 
 socket.on('connection', (client) => {
@@ -109,21 +96,41 @@ socket.on('connection', (client) => {
     client.on('message', (resp) => {
         code = resp.code
         player = new Players(resp.name,client.id)
+
         for(let index = 0; index < rooms.length ; index += 1){
             if(resp.code == rooms[index].code){
                 rooms[index].connections = rooms[index].connections + 1
-                rooms[index].players[player.id] = player
+                if(rooms[index].pieces["X"] == null){
+                    player.piece = "X"
+                    rooms[index].pieces["X"] = player
+                    rooms[index].players[player.name] = player
+                    client.emit("message", {
+                        "op":false
+                    })      
+                } else {
+                    player.piece = "O"
+                    rooms[index].pieces["O"] = player
+                    rooms[index].players[player.name] = player
+                    client.emit("message", {
+                        "op":true
+                    })   
+                }
             }
         }
-        console.log(rooms)
     })
     client.on("disconnect",(resp) => {
         for(let index = 0; index < rooms.length ; index += 1){
             if(code == rooms[index].code){
                 rooms[index].connections = rooms[index].connections - 1
-                delete rooms[index].players[player.id]
+                rooms[index].pieces[player.piece] = null
+                delete rooms[index].players[player.name]
+                if(rooms[index].connections == 0){
+                    rooms.splice(index, 1);
+                }
             }
         }
-        console.log(rooms)
+    })
+    client.on("sendpiece",(resp) => {
+        
     })
 })
