@@ -13,7 +13,14 @@
   	<div id="y"></div>
   	<script src="/socket.io/socket.io.js"></script>
    	<script>
-  		const socket = io()
+		const code = `<%= Code %>`
+    const name = `<%= Name %>`
+  	const socket = io()
+    socket.emit("connection")
+    socket.emit('message',{
+      "code":code,
+      "name":name
+    })
   	</script>
   	<script type="text/javascript" src="/public/main2.js"></script>
 </body>

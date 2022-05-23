@@ -13,17 +13,19 @@
     <div id="opitions">
       <button onclick="showForm(1)">Create Lobby</button>
       <div class="form" id="f1">
-        <form>
-          <label for="lobbyName">Name Lobby:</label>
-          <input type="text" name="lobbyName">
-          <button >Create</button>
+        <form action="/lobbys/" method="POST" id="form1">
+          <label for="lobbyName">Your name:</label>
+          <input type="text" name="playname">
+          <button onclick="setLobby()">Create</button>
         </form>
       </div>
       <button onclick="showForm(2)">Enter in Lobby</button>
       <div class="form" id="f2">
-        <form>
+        <form action="/enterlobby" method="POST">
           <label for="lobbyName">Lobby Code:</label>
           <input type="text" name="lobbyName">
+          <label for="lobbyName">your name</label>
+          <input type="text" name="Nameplayer">
           <button>Enter</button>
         </form>
       </div>
