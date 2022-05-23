@@ -6,22 +6,22 @@ const w = canvas.width
 const h = canvas.height
 let x;
 let y;
-let choice = false
 let plays = 0
 let blockChoice = {
-	"A1": null,
-	"A2": null,
-	"A3": null,
-	
-	"A4": null,
-	"A5": null,
-	"A6": null,
-	
-	"A7": null,
-	"A8": null,
-	"A9": null,
-}
+			"A1": null,
+			"A2": null,
+			"A3": null,
+			
+			"A4": null,
+			"A5": null,
+			"A6": null,
+			
+			"A7": null,
+			"A8": null,
+			"A9": null,
+		}
 let table = [[1,2,3],[4,5,6],[7,8,9]]
+
 class Analytics {
 	 AnalyticGroup1 = {
 		"typeOne":{
@@ -490,40 +490,40 @@ function reset(){
 function tableAnalytics(){
 	let nA = new Analytics
 	if(nA.AnalyticGroup1.analytic() == 1){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"x wins"
 		})
 		reset()
 	} else if(nA.AnalyticGroup1.analytic() == 2){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"0 wins"
 		})
 		reset()
 	}
 	if(nA.AnalyticGroup2.analytic() == 1){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"X wins"
 		})
 		reset()
 	} else if(nA.AnalyticGroup2.analytic() == 2){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"0 wins"
 		})
 		reset()
 	}
 	if(nA.AnalyticGroup3.analytic() == 1){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"x wins"
 		})
 		reset()
 	} else if(nA.AnalyticGroup3.analytic() == 2){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"0 wins"
 		})
 		reset()
 	}
 	if(plays == 9){
-		socket.emit("message",{
+		socket.emit("info",{
 			"msg":"EMPATE"
 		})
 		reset()
