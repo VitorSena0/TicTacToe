@@ -15,11 +15,17 @@
    	<script>
 		const code = `<%= Code %>`
     const name = `<%= Name %>`
+    let choice;
   	const socket = io()
     socket.emit("connection")
     socket.emit('message',{
       "code":code,
       "name":name
+    })
+    socket.on("message",(resp) => {
+      if(resp){
+        choice = resp.op
+      }
     })
   	</script>
   	<script type="text/javascript" src="/public/main2.js"></script>
