@@ -16,6 +16,7 @@
 		const code = `<%= Code %>`
     const name = `<%= Name %>`
     let choice;
+    let turn;
   	const socket = io()
     socket.emit("connection")
     socket.emit('message',{
@@ -25,6 +26,7 @@
     socket.on("message",(resp) => {
       if(resp){
         choice = resp.op
+        turn = resp.turn
       }
     })
   	</script>
