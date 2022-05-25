@@ -96,25 +96,30 @@ socket.on('connection', (client) => {
     client.on('message', (resp) => {
         code = resp.code
         player = new Players(resp.name,client.id)
-
+        let turnPlayer;
         for(let index = 0; index < rooms.length ; index += 1){
             if(resp.code == rooms[index].code){
                 rooms[index].connections = rooms[index].connections + 1
                 if(rooms[index].pieces["X"] == null){
                     player.piece = "X"
+                    turnPlayer = true
                     rooms[index].pieces["X"] = player
                     rooms[index].players[player.name] = player
                     client.emit("message", {
-                        "op":false
+                        "op":true,
+                        "turn":turnPlayer
                     })      
                 } else {
                     player.piece = "O"
+                    turnPlayer = false
                     rooms[index].pieces["O"] = player
                     rooms[index].players[player.name] = player
                     client.emit("message", {
-                        "op":true
+                        "op":false,
+                        "turn":turnPlayer
                     })   
                 }
+                break;''
             }
         }
     })
@@ -127,10 +132,103 @@ socket.on('connection', (client) => {
                 if(rooms[index].connections == 0){
                     rooms.splice(index, 1);
                 }
+               break; 
             }
         }
     })
-    client.on("sendpiece",(resp) => {
-        
+    client.on("updatePoint",(resp) => {
+        if(resp.p1 == null && resp.p2 == true){
+            for(let index = 0; index < rooms.length ; index += 1){
+                if(code == rooms[index].code){
+                    rooms[index].P2 += 1
+                    break;
+                }
+            }
+        } else if(resp.p1 == true && resp.p2 == null){
+            for(let index = 0; index < rooms.length ; index += 1){
+                if(code == rooms[index].code){
+                    rooms[index].P1 += 1
+                    break;
+                }
+            }
+        } else if(resp.p1 == null && resp.p2 == null){
+            for(let index = 0; index < rooms.length ; index += 1){
+                if(code == rooms[index].code){
+                    rooms[index].E += 1
+                    break;
+                }
+            }
+        }
+    })
+    client.on("reset",(resp) => {
+        for(let index = 0; index < rooms.length ; index += 1){
+            if(code == rooms[index].code){
+               rooms[index].plays = 0
+               rooms[index].table = [[1,2,3],[4,5,6],[7,8,9]]
+               rooms[index].blockChoice = {
+                    "A1": null,
+                    "A2": null,
+                    "A3": null,
+                    
+                    "A4": null,
+                    "A5": null,
+                    "A6": null,
+                    
+                    "A7": null,
+                    "A8": null,
+                    "A9": null,
+                }
+                rooms[index].turn = true
+                client.emit("reset",{
+                    "turn":rooms[index].turn,
+                    "choice":rooms[index].blockChoice,
+                    "plays":rooms[index].plays
+                })
+                client.broadcast.emit("reset",{
+                    "turn":rooms[index].turn,
+                    "choice":rooms[index].blockChoice,
+                    "plays":rooms[index].plays
+                })
+                client.emit("resetClients")
+                client.broadcast.emit("resetClients")
+                break;
+            }
+        }
+    })
+    client.on("updatePlays", (resp) => {
+        let turn;
+        for(let index = 0; index < rooms.length ; index += 1){
+            if(code == rooms[index].code){
+               rooms[index].plays += 1
+               rooms[index].blockChoice = resp.choice
+               rooms[index].table = resp.table
+               if(rooms[index].turn == true){
+                    rooms[index].turn = false
+                    turn = false
+               } else {
+                    rooms[index].turn = true
+                    turn = true
+               }
+               if(rooms[index].plays == 9){
+                    client.emit("resetClients")
+                    client.broadcast.emit("resetClients")
+               }
+               client.broadcast.emit("updatePlays", {
+                    "plays":rooms[index].plays,
+                    "table":rooms[index].table,
+                    "choice":rooms[index].blockChoice,
+                    "area":resp.area,
+                    "turn":rooms[index].turn
+               })
+               client.emit("updatePlays", {
+                    "plays":rooms[index].plays,
+                    "table":rooms[index].table,
+                    "choice":rooms[index].blockChoice,
+                    "area":null,
+                    "turn":rooms[index].turn
+               })
+               break;
+            }
+        }
     })
 })
