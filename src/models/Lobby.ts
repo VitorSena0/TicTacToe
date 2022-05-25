@@ -9,6 +9,9 @@ export default class Lobby{
 	public table: any;
 	public blockChoice: any;
 	public pieces;
+	public plays: number;
+	public turn: any;
+	public E:number;
 
 	setplayer(player: any){
 		if(this.connections < 0){
@@ -45,6 +48,9 @@ export default class Lobby{
             "X":null,
             "O":null
         }
+        this.plays = 0;
+        this.turn = true;
+        this.E = 0;
 	}
 
 }
