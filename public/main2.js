@@ -7,6 +7,30 @@ const h = canvas.height
 let x;
 let y;
 let plays = 0
+socket.on("reset",(resp) => {
+	plays = resp.plays
+	turn = resp.turn
+	blockChoice = resp.choice
+})
+socket.on("updatePlays", (resp) => {
+	plays = resp.plays
+	table = resp.table
+	blockChoice = resp.choice
+	turn = resp.turn
+	console.log(turn)
+	if(resp.area){
+		if(choice == true){
+			drawCircle(resp.area)
+			tableAnalytics()
+		} else {
+			drawX(resp.area)
+			tableAnalytics()
+		}
+	}
+})
+socket.on("resetClients", (resp) => {
+	reset()
+})
 let blockChoice = {
 			"A1": null,
 			"A2": null,
@@ -21,7 +45,13 @@ let blockChoice = {
 			"A9": null,
 		}
 let table = [[1,2,3],[4,5,6],[7,8,9]]
-
+function updatePlays(area){
+	socket.emit("updatePlays",{
+		"choice":blockChoice,
+		"table":table,
+		"area":area,
+	})
+}
 class Analytics {
 	 AnalyticGroup1 = {
 		"typeOne":{
@@ -46,7 +76,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup1.typeOne.A1 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 				
 			}
@@ -57,7 +87,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup1.typeTwo.B2 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 			}
 			if(this.AnalyticGroup1.typeThree.A3 == this.AnalyticGroup1.typeThree.B3 && this.AnalyticGroup1.typeThree.B3 == this.AnalyticGroup1.typeThree.C3){
@@ -66,7 +96,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup1.typeThree.A3 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 			}else {
 				return 0
@@ -96,7 +126,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup2.typeOne.A1 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 			}
 			if(this.AnalyticGroup2.typeTwo.B1 == this.AnalyticGroup2.typeTwo.B2 && this.AnalyticGroup2.typeTwo.B2 == this.AnalyticGroup2.typeTwo.B3){
@@ -105,7 +135,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup2.typeTwo.B2 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 			}
 			if(this.AnalyticGroup2.typeThree.C1 == this.AnalyticGroup2.typeThree.C2 && this.AnalyticGroup2.typeThree.C2 == this.AnalyticGroup2.typeThree.C3){
@@ -114,7 +144,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup2.typeThree.C1 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 			}else {
 				return 0
@@ -139,7 +169,7 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup3.typeOne.A1 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
 			}
 			if(this.AnalyticGroup3.typeTwo.A3 == this.AnalyticGroup3.typeTwo.B2 && this.AnalyticGroup3.typeTwo.B2 == this.AnalyticGroup3.typeTwo.C1){
@@ -148,9 +178,8 @@ class Analytics {
 					return 1
 				} else if(this.AnalyticGroup3.typeTwo.B2 == 'O'){
 					console.log("O Wins")
-					return 1
+					return 2
 				}
-				return 1
 			}else {
 				return 0
 			}
@@ -183,175 +212,330 @@ canvas.addEventListener('mousemove', (e) => {
 canvas.addEventListener('click', (e) => {
 	tableAnalytics()
 	console.log(blockChoice)
-	if(choice == true){
-		choice = false
-	} else {
-		choice = true
-	}
-	
-	//line 1
-	if((x > 0 && x < 100) && (y > 0 && y < 100)){
-		if(blockChoice.A1 != true){
-			choiceDraw(1,choice)
-			blockChoice.A1 = true
-			if(choice == true){
-				table[0][0] = 'X'
-			} else {
-				table[0][0] = 'O'
-			}	
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+	if(choice == true && turn == true){
+		if((x > 0 && x < 100) && (y > 0 && y < 100)){
+			if(blockChoice.A1 != true){
+				choiceDraw(1,choice)
+				blockChoice.A1 = true
+				if(choice == true){
+					table[0][0] = 'X'
+				} else {
+					table[0][0] = 'O'
+				}	
+				updatePlays(1)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	if((x > 100 && x < 200) && (y > 0 && y < 100)){
-		if(blockChoice.A2 != true){
-			choiceDraw(2,choice)
-			blockChoice.A2 = true
-			if(choice == true){
-				table[0][1] = 'X'
-			} else {
-				table[0][1] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		if((x > 100 && x < 200) && (y > 0 && y < 100)){
+			if(blockChoice.A2 != true){
+				choiceDraw(2,choice)
+				blockChoice.A2 = true
+				if(choice == true){
+					table[0][1] = 'X'
+				} else {
+					table[0][1] = 'O'
+				}
+				updatePlays(2)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	if((x > 200 && x < 300) && (y > 0 && y < 100)){
-		if(blockChoice.A3 != true){
-			choiceDraw(3,choice)
-			blockChoice.A3 = true
-			if(choice == true){
-				table[0][2] = 'X'
-			} else {
-				table[0][2] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		if((x > 200 && x < 300) && (y > 0 && y < 100)){
+			if(blockChoice.A3 != true){
+				choiceDraw(3,choice)
+				blockChoice.A3 = true
+				if(choice == true){
+					table[0][2] = 'X'
+				} else {
+					table[0][2] = 'O'
+				}
+				updatePlays(3)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	
-	//line 2
-	
-	if((x > 0 && x < 100) && (y > 100 && y < 200)){
-		if(blockChoice.A4 != true){
-			choiceDraw(4,choice)
-			blockChoice.A4 = true
-			if(choice == true){
-				table[1][0] = 'X'
-			} else {
-				table[1][0] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		
+		//line 2
+		
+		if((x > 0 && x < 100) && (y > 100 && y < 200)){
+			if(blockChoice.A4 != true){
+				choiceDraw(4,choice)
+				blockChoice.A4 = true
+				if(choice == true){
+					table[1][0] = 'X'
+				} else {
+					table[1][0] = 'O'
+				}
+				updatePlays(4)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	if((x > 100 && x < 200) && (y > 100 && y < 200)){
-		if(blockChoice.A5 != true){
-			choiceDraw(5,choice)
-			blockChoice.A5 = true
-			if(choice == true){
-				table[1][1] = 'X'
-			} else {
-				table[1][1] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		if((x > 100 && x < 200) && (y > 100 && y < 200)){
+			if(blockChoice.A5 != true){
+				choiceDraw(5,choice)
+				blockChoice.A5 = true
+				if(choice == true){
+					table[1][1] = 'X'
+				} else {
+					table[1][1] = 'O'
+				}
+				updatePlays(5)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	if((x > 200 && x < 300) && (y > 100 && y < 200)){
-		if(blockChoice.A6 != true){
-			choiceDraw(6,choice)
-			blockChoice.A6 = true
-			if(choice == true){
-				table[1][2] = 'X'
-			} else {
-				table[1][2] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		if((x > 200 && x < 300) && (y > 100 && y < 200)){
+			if(blockChoice.A6 != true){
+				choiceDraw(6,choice)
+				blockChoice.A6 = true
+				if(choice == true){
+					table[1][2] = 'X'
+				} else {
+					table[1][2] = 'O'
+				}
+				updatePlays(6)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	
-	//line 3
-	
-	if((x > 0 && x < 100) && (y > 200 && y < 300)){
-		if(blockChoice.A7 != true){
-			choiceDraw(7,choice)
-			blockChoice.A7 = true
-			if(choice == true){
-				table[2][0] = 'X'
-			} else {
-				table[2][0] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		
+		//line 3
+		
+		if((x > 0 && x < 100) && (y > 200 && y < 300)){
+			if(blockChoice.A7 != true){
+				choiceDraw(7,choice)
+				blockChoice.A7 = true
+				if(choice == true){
+					table[2][0] = 'X'
+				} else {
+					table[2][0] = 'O'
+				}
+				updatePlays(7)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	if((x > 100 && x < 200) && (y > 200 && y < 300)){
-		if(blockChoice.A8 != true){
-			choiceDraw(8,choice)
-			blockChoice.A8 = true
-			if(choice == true){
-				table[2][1] = 'X'
-			} else {
-				table[2][1] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		if((x > 100 && x < 200) && (y > 200 && y < 300)){
+			if(blockChoice.A8 != true){
+				choiceDraw(8,choice)
+				blockChoice.A8 = true
+				if(choice == true){
+					table[2][1] = 'X'
+				} else {
+					table[2][1] = 'O'
+				}
+				updatePlays(8)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
-	}
-	if((x > 200 && x < 300) && (y > 200 && y < 300)){
-		if(blockChoice.A9 != true){
-			choiceDraw(9,choice)
-			blockChoice.A9 = true
-			if(choice == true){
-				table[2][2] = 'X'
-			} else {
-				table[2][2] = 'O'
-			}
-			plays += 1
-			tableAnalytics()
-			if(plays == 9){
+		if((x > 200 && x < 300) && (y > 200 && y < 300)){
+			if(blockChoice.A9 != true){
+				choiceDraw(9,choice)
+				blockChoice.A9 = true
+				if(choice == true){
+					table[2][2] = 'X'
+				} else {
+					table[2][2] = 'O'
+				}
+				updatePlays(9)
 				tableAnalytics()
-				plays = 0
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
 			}
 		}
+		console.log(table)
+	} else if(choice == false && turn == false){
+		if((x > 0 && x < 100) && (y > 0 && y < 100)){
+			if(blockChoice.A1 != true){
+				choiceDraw(1,choice)
+				blockChoice.A1 = true
+				if(choice == true){
+					table[0][0] = 'X'
+				} else {
+					table[0][0] = 'O'
+				}	
+				updatePlays(1)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		if((x > 100 && x < 200) && (y > 0 && y < 100)){
+			if(blockChoice.A2 != true){
+				choiceDraw(2,choice)
+				blockChoice.A2 = true
+				if(choice == true){
+					table[0][1] = 'X'
+				} else {
+					table[0][1] = 'O'
+				}
+				updatePlays(2)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		if((x > 200 && x < 300) && (y > 0 && y < 100)){
+			if(blockChoice.A3 != true){
+				choiceDraw(3,choice)
+				blockChoice.A3 = true
+				if(choice == true){
+					table[0][2] = 'X'
+				} else {
+					table[0][2] = 'O'
+				}
+				updatePlays(3)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		
+		//line 2
+		
+		if((x > 0 && x < 100) && (y > 100 && y < 200)){
+			if(blockChoice.A4 != true){
+				choiceDraw(4,choice)
+				blockChoice.A4 = true
+				if(choice == true){
+					table[1][0] = 'X'
+				} else {
+					table[1][0] = 'O'
+				}
+				updatePlays(4)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		if((x > 100 && x < 200) && (y > 100 && y < 200)){
+			if(blockChoice.A5 != true){
+				choiceDraw(5,choice)
+				blockChoice.A5 = true
+				if(choice == true){
+					table[1][1] = 'X'
+				} else {
+					table[1][1] = 'O'
+				}
+				updatePlays(5)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		if((x > 200 && x < 300) && (y > 100 && y < 200)){
+			if(blockChoice.A6 != true){
+				choiceDraw(6,choice)
+				blockChoice.A6 = true
+				if(choice == true){
+					table[1][2] = 'X'
+				} else {
+					table[1][2] = 'O'
+				}
+				updatePlays(6)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		
+		//line 3
+		
+		if((x > 0 && x < 100) && (y > 200 && y < 300)){
+			if(blockChoice.A7 != true){
+				choiceDraw(7,choice)
+				blockChoice.A7 = true
+				if(choice == true){
+					table[2][0] = 'X'
+				} else {
+					table[2][0] = 'O'
+				}
+				updatePlays(7)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		if((x > 100 && x < 200) && (y > 200 && y < 300)){
+			if(blockChoice.A8 != true){
+				choiceDraw(8,choice)
+				blockChoice.A8 = true
+				if(choice == true){
+					table[2][1] = 'X'
+				} else {
+					table[2][1] = 'O'
+				}
+				updatePlays(8)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		if((x > 200 && x < 300) && (y > 200 && y < 300)){
+			if(blockChoice.A9 != true){
+				choiceDraw(9,choice)
+				blockChoice.A9 = true
+				if(choice == true){
+					table[2][2] = 'X'
+				} else {
+					table[2][2] = 'O'
+				}
+				updatePlays(9)
+				tableAnalytics()
+				if(plays == 9){
+					tableAnalytics()
+					plays = 0
+				}
+			}
+		}
+		console.log(table)
 	}
-	console.log(table)
 })
-
 function drawX(area){
 	switch(area){
 		case 1:
@@ -484,48 +668,78 @@ function reset(){
 	blockChoice.A9 = null
 	
 	table = [[1,2,3],[4,5,6],[7,8,9]]
-	plays = 0
 }
 
 function tableAnalytics(){
 	let nA = new Analytics
-	if(nA.AnalyticGroup1.analytic() == 1){
-		socket.emit("info",{
-			"msg":"x wins"
-		})
-		reset()
-	} else if(nA.AnalyticGroup1.analytic() == 2){
-		socket.emit("info",{
-			"msg":"0 wins"
-		})
-		reset()
+	if(choice == true){
+		if(nA.AnalyticGroup1.analytic() == 1){
+			socket.emit("updatePoint",{
+				"p1":true,
+				"p2":null
+			})
+			console.log("group1 - 1")
+			socket.emit("reset")
+			reset()
+		}
+		if(nA.AnalyticGroup2.analytic() == 1){
+			socket.emit("updatePoint",{
+				"p1":true,
+				"p2":null
+			})
+			console.log("group2")
+			socket.emit("reset")
+			reset()
+		}
+		if(nA.AnalyticGroup3.analytic() == 1){
+			socket.emit("updatePoint",{
+				"p1":true,
+				"p2":null
+			})
+			console.log("group3 - 1")
+			socket.emit("reset")
+			reset()
+		}
+	} else {
+		if(nA.AnalyticGroup1.analytic() == 2){
+			socket.emit("updatePoint",{
+				"p1":null,
+				"p2":true
+			})
+			console.log("group1 - 2")
+			socket.emit("reset")
+			reset()
+		}
+	
+		if(nA.AnalyticGroup2.analytic() == 2){
+			socket.emit("updatePoint",{
+				"p1":null,
+				"p2":true
+			})
+			console.log("group2")
+			socket.emit("reset")
+			reset()
+		}
+		
+		if(nA.AnalyticGroup3.analytic() == 2){
+			socket.emit("updatePoint",{
+				"p1":null,
+				"p2":true
+			})
+			console.log("group3")
+			socket.emit("reset")
+			reset()
+		}
 	}
-	if(nA.AnalyticGroup2.analytic() == 1){
-		socket.emit("info",{
-			"msg":"X wins"
-		})
-		reset()
-	} else if(nA.AnalyticGroup2.analytic() == 2){
-		socket.emit("info",{
-			"msg":"0 wins"
-		})
-		reset()
-	}
-	if(nA.AnalyticGroup3.analytic() == 1){
-		socket.emit("info",{
-			"msg":"x wins"
-		})
-		reset()
-	} else if(nA.AnalyticGroup3.analytic() == 2){
-		socket.emit("info",{
-			"msg":"0 wins"
-		})
-		reset()
-	}
+	
+	
 	if(plays == 9){
-		socket.emit("info",{
-			"msg":"EMPATE"
+		socket.emit("updatePoint",{
+			"p1":null,
+			"p2":null
 		})
+		console.log("empate")
+		socket.emit("reset")
 		reset()
 	}
 }
