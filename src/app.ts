@@ -93,13 +93,20 @@ server.listen(8000,() => {
 socket.on('connection', (client) => {
     let code: any;
     let player: any;
+    let unlock: any;
     client.on('message', (resp) => {
         code = resp.code
         player = new Players(resp.name,client.id)
         let turnPlayer;
         for(let index = 0; index < rooms.length ; index += 1){
             if(resp.code == rooms[index].code){
+                client.join(code)
                 rooms[index].connections = rooms[index].connections + 1
+                if(rooms[index].connections < 2){
+                    unlock = false
+                } else {
+                    unlock = true
+                }
                 if(rooms[index].pieces["X"] == null){
                     player.piece = "X"
                     turnPlayer = true
@@ -107,7 +114,8 @@ socket.on('connection', (client) => {
                     rooms[index].players[player.name] = player
                     client.emit("message", {
                         "op":true,
-                        "turn":turnPlayer
+                        "turn":turnPlayer,
+                        "unlock":unlock
                     })      
                 } else {
                     player.piece = "O"
@@ -116,10 +124,15 @@ socket.on('connection', (client) => {
                     rooms[index].players[player.name] = player
                     client.emit("message", {
                         "op":false,
-                        "turn":turnPlayer
-                    })   
+                        "turn":turnPlayer,
+                        "unlock":unlock
+                    })
+                    if(rooms[index].connections == 2){
+                        client.broadcast.emit("startGame"+code)
+                        client.emit("startGame"+code)
+                    }
                 }
-                break;''
+                break;
             }
         }
     })
@@ -128,6 +141,7 @@ socket.on('connection', (client) => {
             if(code == rooms[index].code){
                 rooms[index].connections = rooms[index].connections - 1
                 rooms[index].pieces[player.piece] = null
+                client.leave(code)
                 delete rooms[index].players[player.name]
                 if(rooms[index].connections == 0){
                     rooms.splice(index, 1);
@@ -178,19 +192,19 @@ socket.on('connection', (client) => {
                     "A8": null,
                     "A9": null,
                 }
-                rooms[index].turn = true
-                client.emit("reset",{
+               // rooms[index].turn = true
+                client.emit("reset"+code,{
                     "turn":rooms[index].turn,
                     "choice":rooms[index].blockChoice,
                     "plays":rooms[index].plays
                 })
-                client.broadcast.emit("reset",{
+                client.broadcast.emit("reset"+code,{
                     "turn":rooms[index].turn,
                     "choice":rooms[index].blockChoice,
                     "plays":rooms[index].plays
                 })
-                client.emit("resetClients")
-                client.broadcast.emit("resetClients")
+                client.emit("resetClients"+code)
+                client.broadcast.emit("resetClients"+code)
                 break;
             }
         }
@@ -210,17 +224,17 @@ socket.on('connection', (client) => {
                     turn = true
                }
                if(rooms[index].plays == 9){
-                    client.emit("resetClients")
-                    client.broadcast.emit("resetClients")
+                    client.emit("resetClients"+code)
+                    client.broadcast.emit("resetClients"+code)
                }
-               client.broadcast.emit("updatePlays", {
+               client.broadcast.emit("updatePlays"+code, {
                     "plays":rooms[index].plays,
                     "table":rooms[index].table,
                     "choice":rooms[index].blockChoice,
                     "area":resp.area,
                     "turn":rooms[index].turn
                })
-               client.emit("updatePlays", {
+               client.emit("updatePlays"+code, {
                     "plays":rooms[index].plays,
                     "table":rooms[index].table,
                     "choice":rooms[index].blockChoice,

@@ -7,12 +7,12 @@ const h = canvas.height
 let x;
 let y;
 let plays = 0
-socket.on("reset",(resp) => {
+socket.on("reset"+code,(resp) => {
 	plays = resp.plays
 	turn = resp.turn
 	blockChoice = resp.choice
 })
-socket.on("updatePlays", (resp) => {
+socket.on("updatePlays"+code, (resp) => {
 	plays = resp.plays
 	table = resp.table
 	blockChoice = resp.choice
@@ -28,7 +28,13 @@ socket.on("updatePlays", (resp) => {
 		}
 	}
 })
-socket.on("resetClients", (resp) => {
+socket.on("startGame"+code, () => {
+	if(unlock == false){
+		unlock = true
+	}
+	startGame()
+})
+socket.on("resetClients"+code, (resp) => {
 	reset()
 })
 let blockChoice = {
@@ -186,21 +192,25 @@ class Analytics {
 		}	
 	}
 }
-//primeira linha vertical
-ctx.fillRect(w/3, 0, 5, h);
-ctx.fillStyle = "black";
+function startGame(){
+		//primeira linha vertical
+		ctx.fillRect(w/3, 0, 5, h);
+		ctx.fillStyle = "black";
 
-//segunda linha vertical
-ctx.fillRect((w/3) * 2, 0, 5, h);
-ctx.fillStyle = "black";
+		//segunda linha vertical
+		ctx.fillRect((w/3) * 2, 0, 5, h);
+		ctx.fillStyle = "black";
 
-//primeira linha horizontal
-ctx.fillRect(0, h/3, w, 5);
-ctx.fillStyle = "black";
+		//primeira linha horizontal
+		ctx.fillRect(0, h/3, w, 5);
+		ctx.fillStyle = "black";
 
-//segunda linnha horizontal
-ctx.fillRect(0, (h/3)*2, w, 5);
-ctx.fillStyle = "black";
+		//segunda linnha horizontal
+		ctx.fillRect(0, (h/3)*2, w, 5);
+		ctx.fillStyle = "black";
+}
+
+
 
 canvas.addEventListener('mousemove', (e) => {
 	x = e.offsetX
@@ -209,332 +219,336 @@ canvas.addEventListener('mousemove', (e) => {
 	testX.innerHTML = x;
 	testY.innerHTML = y;
 })
+
 canvas.addEventListener('click', (e) => {
 	tableAnalytics()
 	console.log(blockChoice)
-	if(choice == true && turn == true){
-		if((x > 0 && x < 100) && (y > 0 && y < 100)){
-			if(blockChoice.A1 != true){
-				choiceDraw(1,choice)
-				blockChoice.A1 = true
-				if(choice == true){
-					table[0][0] = 'X'
-				} else {
-					table[0][0] = 'O'
-				}	
-				updatePlays(1)
-				tableAnalytics()
-				if(plays == 9){
+	if(unlock == true){
+		if(choice == true && turn == true){
+			if((x > 0 && x < 100) && (y > 0 && y < 100)){
+				if(blockChoice.A1 != true){
+					choiceDraw(1,choice)
+					blockChoice.A1 = true
+					if(choice == true){
+						table[0][0] = 'X'
+					} else {
+						table[0][0] = 'O'
+					}	
+					updatePlays(1)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 100 && x < 200) && (y > 0 && y < 100)){
-			if(blockChoice.A2 != true){
-				choiceDraw(2,choice)
-				blockChoice.A2 = true
-				if(choice == true){
-					table[0][1] = 'X'
-				} else {
-					table[0][1] = 'O'
-				}
-				updatePlays(2)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 100 && x < 200) && (y > 0 && y < 100)){
+				if(blockChoice.A2 != true){
+					choiceDraw(2,choice)
+					blockChoice.A2 = true
+					if(choice == true){
+						table[0][1] = 'X'
+					} else {
+						table[0][1] = 'O'
+					}
+					updatePlays(2)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 200 && x < 300) && (y > 0 && y < 100)){
-			if(blockChoice.A3 != true){
-				choiceDraw(3,choice)
-				blockChoice.A3 = true
-				if(choice == true){
-					table[0][2] = 'X'
-				} else {
-					table[0][2] = 'O'
-				}
-				updatePlays(3)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 200 && x < 300) && (y > 0 && y < 100)){
+				if(blockChoice.A3 != true){
+					choiceDraw(3,choice)
+					blockChoice.A3 = true
+					if(choice == true){
+						table[0][2] = 'X'
+					} else {
+						table[0][2] = 'O'
+					}
+					updatePlays(3)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		
-		//line 2
-		
-		if((x > 0 && x < 100) && (y > 100 && y < 200)){
-			if(blockChoice.A4 != true){
-				choiceDraw(4,choice)
-				blockChoice.A4 = true
-				if(choice == true){
-					table[1][0] = 'X'
-				} else {
-					table[1][0] = 'O'
-				}
-				updatePlays(4)
-				tableAnalytics()
-				if(plays == 9){
+			
+			//line 2
+			
+			if((x > 0 && x < 100) && (y > 100 && y < 200)){
+				if(blockChoice.A4 != true){
+					choiceDraw(4,choice)
+					blockChoice.A4 = true
+					if(choice == true){
+						table[1][0] = 'X'
+					} else {
+						table[1][0] = 'O'
+					}
+					updatePlays(4)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 100 && x < 200) && (y > 100 && y < 200)){
-			if(blockChoice.A5 != true){
-				choiceDraw(5,choice)
-				blockChoice.A5 = true
-				if(choice == true){
-					table[1][1] = 'X'
-				} else {
-					table[1][1] = 'O'
-				}
-				updatePlays(5)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 100 && x < 200) && (y > 100 && y < 200)){
+				if(blockChoice.A5 != true){
+					choiceDraw(5,choice)
+					blockChoice.A5 = true
+					if(choice == true){
+						table[1][1] = 'X'
+					} else {
+						table[1][1] = 'O'
+					}
+					updatePlays(5)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 200 && x < 300) && (y > 100 && y < 200)){
-			if(blockChoice.A6 != true){
-				choiceDraw(6,choice)
-				blockChoice.A6 = true
-				if(choice == true){
-					table[1][2] = 'X'
-				} else {
-					table[1][2] = 'O'
-				}
-				updatePlays(6)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 200 && x < 300) && (y > 100 && y < 200)){
+				if(blockChoice.A6 != true){
+					choiceDraw(6,choice)
+					blockChoice.A6 = true
+					if(choice == true){
+						table[1][2] = 'X'
+					} else {
+						table[1][2] = 'O'
+					}
+					updatePlays(6)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		
-		//line 3
-		
-		if((x > 0 && x < 100) && (y > 200 && y < 300)){
-			if(blockChoice.A7 != true){
-				choiceDraw(7,choice)
-				blockChoice.A7 = true
-				if(choice == true){
-					table[2][0] = 'X'
-				} else {
-					table[2][0] = 'O'
-				}
-				updatePlays(7)
-				tableAnalytics()
-				if(plays == 9){
+			
+			//line 3
+			
+			if((x > 0 && x < 100) && (y > 200 && y < 300)){
+				if(blockChoice.A7 != true){
+					choiceDraw(7,choice)
+					blockChoice.A7 = true
+					if(choice == true){
+						table[2][0] = 'X'
+					} else {
+						table[2][0] = 'O'
+					}
+					updatePlays(7)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 100 && x < 200) && (y > 200 && y < 300)){
-			if(blockChoice.A8 != true){
-				choiceDraw(8,choice)
-				blockChoice.A8 = true
-				if(choice == true){
-					table[2][1] = 'X'
-				} else {
-					table[2][1] = 'O'
-				}
-				updatePlays(8)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 100 && x < 200) && (y > 200 && y < 300)){
+				if(blockChoice.A8 != true){
+					choiceDraw(8,choice)
+					blockChoice.A8 = true
+					if(choice == true){
+						table[2][1] = 'X'
+					} else {
+						table[2][1] = 'O'
+					}
+					updatePlays(8)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 200 && x < 300) && (y > 200 && y < 300)){
-			if(blockChoice.A9 != true){
-				choiceDraw(9,choice)
-				blockChoice.A9 = true
-				if(choice == true){
-					table[2][2] = 'X'
-				} else {
-					table[2][2] = 'O'
-				}
-				updatePlays(9)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 200 && x < 300) && (y > 200 && y < 300)){
+				if(blockChoice.A9 != true){
+					choiceDraw(9,choice)
+					blockChoice.A9 = true
+					if(choice == true){
+						table[2][2] = 'X'
+					} else {
+						table[2][2] = 'O'
+					}
+					updatePlays(9)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		console.log(table)
-	} else if(choice == false && turn == false){
-		if((x > 0 && x < 100) && (y > 0 && y < 100)){
-			if(blockChoice.A1 != true){
-				choiceDraw(1,choice)
-				blockChoice.A1 = true
-				if(choice == true){
-					table[0][0] = 'X'
-				} else {
-					table[0][0] = 'O'
-				}	
-				updatePlays(1)
-				tableAnalytics()
-				if(plays == 9){
+			console.log(table)
+		} else if(choice == false && turn == false){
+			if((x > 0 && x < 100) && (y > 0 && y < 100)){
+				if(blockChoice.A1 != true){
+					choiceDraw(1,choice)
+					blockChoice.A1 = true
+					if(choice == true){
+						table[0][0] = 'X'
+					} else {
+						table[0][0] = 'O'
+					}	
+					updatePlays(1)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 100 && x < 200) && (y > 0 && y < 100)){
-			if(blockChoice.A2 != true){
-				choiceDraw(2,choice)
-				blockChoice.A2 = true
-				if(choice == true){
-					table[0][1] = 'X'
-				} else {
-					table[0][1] = 'O'
-				}
-				updatePlays(2)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 100 && x < 200) && (y > 0 && y < 100)){
+				if(blockChoice.A2 != true){
+					choiceDraw(2,choice)
+					blockChoice.A2 = true
+					if(choice == true){
+						table[0][1] = 'X'
+					} else {
+						table[0][1] = 'O'
+					}
+					updatePlays(2)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 200 && x < 300) && (y > 0 && y < 100)){
-			if(blockChoice.A3 != true){
-				choiceDraw(3,choice)
-				blockChoice.A3 = true
-				if(choice == true){
-					table[0][2] = 'X'
-				} else {
-					table[0][2] = 'O'
-				}
-				updatePlays(3)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 200 && x < 300) && (y > 0 && y < 100)){
+				if(blockChoice.A3 != true){
+					choiceDraw(3,choice)
+					blockChoice.A3 = true
+					if(choice == true){
+						table[0][2] = 'X'
+					} else {
+						table[0][2] = 'O'
+					}
+					updatePlays(3)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		
-		//line 2
-		
-		if((x > 0 && x < 100) && (y > 100 && y < 200)){
-			if(blockChoice.A4 != true){
-				choiceDraw(4,choice)
-				blockChoice.A4 = true
-				if(choice == true){
-					table[1][0] = 'X'
-				} else {
-					table[1][0] = 'O'
-				}
-				updatePlays(4)
-				tableAnalytics()
-				if(plays == 9){
+			
+			//line 2
+			
+			if((x > 0 && x < 100) && (y > 100 && y < 200)){
+				if(blockChoice.A4 != true){
+					choiceDraw(4,choice)
+					blockChoice.A4 = true
+					if(choice == true){
+						table[1][0] = 'X'
+					} else {
+						table[1][0] = 'O'
+					}
+					updatePlays(4)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 100 && x < 200) && (y > 100 && y < 200)){
-			if(blockChoice.A5 != true){
-				choiceDraw(5,choice)
-				blockChoice.A5 = true
-				if(choice == true){
-					table[1][1] = 'X'
-				} else {
-					table[1][1] = 'O'
-				}
-				updatePlays(5)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 100 && x < 200) && (y > 100 && y < 200)){
+				if(blockChoice.A5 != true){
+					choiceDraw(5,choice)
+					blockChoice.A5 = true
+					if(choice == true){
+						table[1][1] = 'X'
+					} else {
+						table[1][1] = 'O'
+					}
+					updatePlays(5)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 200 && x < 300) && (y > 100 && y < 200)){
-			if(blockChoice.A6 != true){
-				choiceDraw(6,choice)
-				blockChoice.A6 = true
-				if(choice == true){
-					table[1][2] = 'X'
-				} else {
-					table[1][2] = 'O'
-				}
-				updatePlays(6)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 200 && x < 300) && (y > 100 && y < 200)){
+				if(blockChoice.A6 != true){
+					choiceDraw(6,choice)
+					blockChoice.A6 = true
+					if(choice == true){
+						table[1][2] = 'X'
+					} else {
+						table[1][2] = 'O'
+					}
+					updatePlays(6)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		
-		//line 3
-		
-		if((x > 0 && x < 100) && (y > 200 && y < 300)){
-			if(blockChoice.A7 != true){
-				choiceDraw(7,choice)
-				blockChoice.A7 = true
-				if(choice == true){
-					table[2][0] = 'X'
-				} else {
-					table[2][0] = 'O'
-				}
-				updatePlays(7)
-				tableAnalytics()
-				if(plays == 9){
+			
+			//line 3
+			
+			if((x > 0 && x < 100) && (y > 200 && y < 300)){
+				if(blockChoice.A7 != true){
+					choiceDraw(7,choice)
+					blockChoice.A7 = true
+					if(choice == true){
+						table[2][0] = 'X'
+					} else {
+						table[2][0] = 'O'
+					}
+					updatePlays(7)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 100 && x < 200) && (y > 200 && y < 300)){
-			if(blockChoice.A8 != true){
-				choiceDraw(8,choice)
-				blockChoice.A8 = true
-				if(choice == true){
-					table[2][1] = 'X'
-				} else {
-					table[2][1] = 'O'
-				}
-				updatePlays(8)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 100 && x < 200) && (y > 200 && y < 300)){
+				if(blockChoice.A8 != true){
+					choiceDraw(8,choice)
+					blockChoice.A8 = true
+					if(choice == true){
+						table[2][1] = 'X'
+					} else {
+						table[2][1] = 'O'
+					}
+					updatePlays(8)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
-		}
-		if((x > 200 && x < 300) && (y > 200 && y < 300)){
-			if(blockChoice.A9 != true){
-				choiceDraw(9,choice)
-				blockChoice.A9 = true
-				if(choice == true){
-					table[2][2] = 'X'
-				} else {
-					table[2][2] = 'O'
-				}
-				updatePlays(9)
-				tableAnalytics()
-				if(plays == 9){
+			if((x > 200 && x < 300) && (y > 200 && y < 300)){
+				if(blockChoice.A9 != true){
+					choiceDraw(9,choice)
+					blockChoice.A9 = true
+					if(choice == true){
+						table[2][2] = 'X'
+					} else {
+						table[2][2] = 'O'
+					}
+					updatePlays(9)
 					tableAnalytics()
-					plays = 0
+					if(plays == 9){
+						tableAnalytics()
+						plays = 0
+					}
 				}
 			}
+			console.log(table)
 		}
-		console.log(table)
 	}
+		
 })
 function drawX(area){
 	switch(area){

@@ -11,12 +11,17 @@
    <canvas height="300" width="300" style="border: solid;" id="canvas"></canvas>
   	<div id="x"></div>
   	<div id="y"></div>
+    <div>Play1:<div id="play1"></div></div>
+    <div>Play2:<div id="play2"></div></div>
   	<script src="/socket.io/socket.io.js"></script>
    	<script>
 		const code = `<%= Code %>`
     const name = `<%= Name %>`
     let choice;
     let turn;
+    let unlock = false;
+    let play1;
+    let play2;
   	const socket = io()
     socket.emit("connection")
     socket.emit('message',{
@@ -24,9 +29,26 @@
       "name":name
     })
     socket.on("message",(resp) => {
+      console.log("emitido")
       if(resp){
-        choice = resp.op
-        turn = resp.turn
+        if(resp.unlock){
+          unlock = resp.unlock
+        }
+        if(resp.turn){
+          turn = resp.turn
+        }
+        if(resp.op == false || resp.op == true){
+          console.log(resp.op)
+          choice = resp.op
+        }
+        if(resp.player1){
+          play1 = resp.player1
+          document.getElementById('play1').innerHTML = play1
+        }
+        if(resp.player2){
+          play2 = resp.player2
+          document.getElementById('play2').innerHTML = play2
+        }
       }
     })
   	</script>
