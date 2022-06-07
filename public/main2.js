@@ -15,11 +15,60 @@ socket.on("reset"+code,(resp) => {
 	turn = resp.turn
 	blockChoice = resp.choice
 })
+function resetAll(){
+	ctx.reset()
+		
+	blockChoice.A1 = null
+	blockChoice.A2 = null
+	blockChoice.A3 = null
+	
+	blockChoice.A4 = null
+	blockChoice.A5 = null
+	blockChoice.A6 = null
+	
+	blockChoice.A7 = null
+	blockChoice.A8 = null
+	blockChoice.A9 = null
+	
+	table = [[1,2,3],[4,5,6],[7,8,9]]
+	unlock = false
+	if(choice == true){
+		document.getElementById('play2').innerHTML = " "
+	} else {
+		document.getElementById('play1').innerHTML = " "
+	}
+	document.getElementById('p1').innerHTML = 0
+	document.getElementById('p2').innerHTML = 0
+	document.getElementById('empates').innerHTML = 0
+	if(choice == true){
+		document.getElementById('info').innerHTML = "Player 2 Disconnect"
+	} else {
+		document.getElementById('info').innerHTML = "Player 1 Disconnect"
+	}
+}
+socket.on("resetALL"+code,(resp) => {
+	console.log("emitido - resetAll")
+	socket.emit("resetALL")
+	resetAll()
+})
 socket.on("updatePlays"+code, (resp) => {
 	plays = resp.plays
 	table = resp.table
 	blockChoice = resp.choice
 	turn = resp.turn
+
+	if(turn == true && choice == true ){
+		document.getElementById('info').innerHTML = "Is your turn - x"
+	} else if( turn == false && choice == true){
+		document.getElementById('info').innerHTML = " "
+	}
+
+	if( turn == true && choice == false){
+		document.getElementById('info').innerHTML = ""
+	} else if( turn == false && choice == false) {
+		document.getElementById('info').innerHTML = "Is your turn - 0"
+	}
+
 	console.log(turn)
 	if(resp.area){
 		if(choice == true){
@@ -211,6 +260,19 @@ function startGame(){
 		//segunda linnha horizontal
 		ctx.fillRect(0, (h/3)*2, w, 5);
 		ctx.fillStyle = "black";
+
+	if(turn == true && choice == true ){
+		document.getElementById('info').innerHTML = "Is your turn - x"
+	} else if( turn == false && choice == true){
+		document.getElementById('info').innerHTML = " "
+	}
+
+	if( turn == true && choice == false){
+		document.getElementById('info').innerHTML = ""
+	} else if( turn == false && choice == false) {
+		document.getElementById('info').innerHTML = "Is your turn - 0"
+	}
+
 }
 
 
@@ -689,10 +751,11 @@ function reset(){
 
 function tableAnalytics(){
 	let nA = new Analytics
-	let winner = true;
+	let winner = false;
+
 	if(choice == true){
 		if(nA.AnalyticGroup1.analytic() == 1){
-			winner = false
+			winner = true
 	
 			socket.emit("updatePoint",{
 				"p1":true,
@@ -703,7 +766,7 @@ function tableAnalytics(){
 			reset()
 		}
 		if(nA.AnalyticGroup2.analytic() == 1){
-			winner = false
+			winner = true
 	
 			socket.emit("updatePoint",{
 				"p1":true,
@@ -715,7 +778,7 @@ function tableAnalytics(){
 		}
 		if(nA.AnalyticGroup3.analytic() == 1){
 
-			winner = false
+			winner = true
 			socket.emit("updatePoint",{
 				"p1":true,
 				"p2":null
@@ -727,7 +790,7 @@ function tableAnalytics(){
 	} else {
 		if(nA.AnalyticGroup1.analytic() == 2){
 
-			winner = false
+			winner = true
 			socket.emit("updatePoint",{
 				"p1":null,
 				"p2":true
@@ -738,7 +801,7 @@ function tableAnalytics(){
 		}
 	
 		if(nA.AnalyticGroup2.analytic() == 2){
-			winner = false
+			winner = true
 
 			socket.emit("updatePoint",{
 				"p1":null,
@@ -751,7 +814,7 @@ function tableAnalytics(){
 		
 		if(nA.AnalyticGroup3.analytic() == 2){
 
-			winner = false
+			winner = true
 			socket.emit("updatePoint",{
 				"p1":null,
 				"p2":true
@@ -763,7 +826,7 @@ function tableAnalytics(){
 	}
 	
 	
-	if(plays == 9 && winner != true){
+	if(plays == 9 && winner == false){
 
 		socket.emit("updatePoint",{
 			"p1":null,

@@ -6,6 +6,7 @@ export default class Lobby{
 	public historic: any;
 	public connections: number;
 	public name;
+	public rounds: number;
 	public table: any;
 	public blockChoice: any;
 	public pieces;
@@ -51,6 +52,7 @@ export default class Lobby{
         this.plays = 0;
         this.turn = true;
         this.E = 0;
+        this.rounds = 0;
 	}
 
 }

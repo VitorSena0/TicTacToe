@@ -41,11 +41,15 @@ app.get("/lobbys/:loby",(req,res) => {
             confirm = true
         } else if(elem.code == req.params.loby){
             if(elem.connections < 2){
-                res.render('session',{
-                    "Code":req.params.loby,
-                    "Name":tempname
-                })
-                confirm = false
+                if(elem.players[tempname]){
+                    confirm = true
+                } else {
+                    res.render('session',{
+                        "Code":req.params.loby,
+                        "Name":tempname
+                    })
+                    confirm = false
+                } 
             } else {
                 confirm = false
                 res.redirect("/")
@@ -55,7 +59,7 @@ app.get("/lobbys/:loby",(req,res) => {
             res.redirect("/")
         }
     })
-    if(confirm){
+    if(confirm == true){
         res.redirect("/")
     }
     tempname = " "
@@ -117,7 +121,24 @@ socket.on('connection', (client) => {
                         "turn":turnPlayer,
                         "unlock":unlock,
                         "player1":rooms[index].pieces["X"].name,
-                    })      
+                    })
+                    if(rooms[index].connections == 2) {
+                        client.emit("message", {
+                            "op":true,
+                            "turn":turnPlayer,
+                            "unlock":unlock,
+                            "player1":rooms[index].pieces["X"].name,
+                            "player2":rooms[index].pieces["O"].name
+                        })
+                        client.broadcast.emit("message", {
+                            "player1":rooms[index].pieces["X"].name,
+                            "player2":rooms[index].pieces["O"].name
+                        })
+                    }
+                    if(rooms[index].connections == 2){
+                        client.broadcast.emit("startGame"+code)
+                        client.emit("startGame"+code)
+                    }   
                 } else {
                     player.piece = "O"
                     turnPlayer = false
@@ -149,6 +170,7 @@ socket.on('connection', (client) => {
                 rooms[index].connections = rooms[index].connections - 1
                 rooms[index].pieces[player.piece] = null
                 client.leave(code)
+                client.broadcast.emit("resetALL"+code)
                 delete rooms[index].players[player.name]
                 if(rooms[index].connections == 0){
                     rooms.splice(index, 1);
@@ -162,6 +184,7 @@ socket.on('connection', (client) => {
             for(let index = 0; index < rooms.length ; index += 1){
                 if(code == rooms[index].code){
                     rooms[index].P2 += 1
+                    rooms[index].rounds += 1
                     client.emit("updateData"+code,{
                         'p2':rooms[index].P2
                     })
@@ -175,6 +198,7 @@ socket.on('connection', (client) => {
             for(let index = 0; index < rooms.length ; index += 1){
                 if(code == rooms[index].code){
                     rooms[index].P1 += 1
+                    rooms[index].rounds += 1
                     client.emit("updateData"+code,{
                         'p1':rooms[index].P1
                     })
@@ -188,6 +212,7 @@ socket.on('connection', (client) => {
             for(let index = 0; index < rooms.length ; index += 1){
                 if(code == rooms[index].code){
                     rooms[index].E += 1
+                    rooms[index].rounds += 1
                     client.emit("updateData"+code,{
                         'e':rooms[index].E
                     })
@@ -230,6 +255,33 @@ socket.on('connection', (client) => {
                 })
                 client.emit("resetClients"+code)
                 client.broadcast.emit("resetClients"+code)
+                break;
+            }
+        }
+    })
+    //resetALL é chamado quando um dos jogadores sai da partida ou perde a conexão
+    client.on("resetALL",(resp) => {
+        for(let index = 0; index < rooms.length ; index += 1){
+            if(code == rooms[index].code){
+               rooms[index].plays = 0
+               rooms[index].table = [[1,2,3],[4,5,6],[7,8,9]]
+               rooms[index].E = 0
+               rooms[index].P1 = 0
+               rooms[index].P2 = 0
+               rooms[index].rounds = 0
+               rooms[index].blockChoice = {
+                    "A1": null,
+                    "A2": null,
+                    "A3": null,
+                    
+                    "A4": null,
+                    "A5": null,
+                    "A6": null,
+                    
+                    "A7": null,
+                    "A8": null,
+                    "A9": null,
+                }
                 break;
             }
         }
