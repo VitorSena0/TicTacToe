@@ -4,6 +4,9 @@ const testY = document.getElementById("y")
 const ctx = canvas.getContext("2d")
 const w = canvas.width
 const h = canvas.height
+let p1 = 0;
+let p2 = 0;
+let empates = 0;
 let x;
 let y;
 let plays = 0
@@ -686,8 +689,11 @@ function reset(){
 
 function tableAnalytics(){
 	let nA = new Analytics
+	let winner = true;
 	if(choice == true){
 		if(nA.AnalyticGroup1.analytic() == 1){
+			winner = false
+	
 			socket.emit("updatePoint",{
 				"p1":true,
 				"p2":null
@@ -697,6 +703,8 @@ function tableAnalytics(){
 			reset()
 		}
 		if(nA.AnalyticGroup2.analytic() == 1){
+			winner = false
+	
 			socket.emit("updatePoint",{
 				"p1":true,
 				"p2":null
@@ -706,6 +714,8 @@ function tableAnalytics(){
 			reset()
 		}
 		if(nA.AnalyticGroup3.analytic() == 1){
+
+			winner = false
 			socket.emit("updatePoint",{
 				"p1":true,
 				"p2":null
@@ -716,6 +726,8 @@ function tableAnalytics(){
 		}
 	} else {
 		if(nA.AnalyticGroup1.analytic() == 2){
+
+			winner = false
 			socket.emit("updatePoint",{
 				"p1":null,
 				"p2":true
@@ -726,6 +738,8 @@ function tableAnalytics(){
 		}
 	
 		if(nA.AnalyticGroup2.analytic() == 2){
+			winner = false
+
 			socket.emit("updatePoint",{
 				"p1":null,
 				"p2":true
@@ -736,6 +750,8 @@ function tableAnalytics(){
 		}
 		
 		if(nA.AnalyticGroup3.analytic() == 2){
+
+			winner = false
 			socket.emit("updatePoint",{
 				"p1":null,
 				"p2":true
@@ -747,11 +763,13 @@ function tableAnalytics(){
 	}
 	
 	
-	if(plays == 9){
+	if(plays == 9 && winner != true){
+
 		socket.emit("updatePoint",{
 			"p1":null,
 			"p2":null
 		})
+
 		console.log("empate")
 		socket.emit("reset")
 		reset()

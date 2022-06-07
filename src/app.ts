@@ -115,7 +115,8 @@ socket.on('connection', (client) => {
                     client.emit("message", {
                         "op":true,
                         "turn":turnPlayer,
-                        "unlock":unlock
+                        "unlock":unlock,
+                        "player1":rooms[index].pieces["X"].name,
                     })      
                 } else {
                     player.piece = "O"
@@ -125,7 +126,13 @@ socket.on('connection', (client) => {
                     client.emit("message", {
                         "op":false,
                         "turn":turnPlayer,
-                        "unlock":unlock
+                        "unlock":unlock,
+                        "player1":rooms[index].pieces["X"].name,
+                        "player2":rooms[index].pieces["O"].name
+                    })
+                    client.broadcast.emit("message", {
+                        "player1":rooms[index].pieces["X"].name,
+                        "player2":rooms[index].pieces["O"].name
                     })
                     if(rooms[index].connections == 2){
                         client.broadcast.emit("startGame"+code)
@@ -155,6 +162,12 @@ socket.on('connection', (client) => {
             for(let index = 0; index < rooms.length ; index += 1){
                 if(code == rooms[index].code){
                     rooms[index].P2 += 1
+                    client.emit("updateData"+code,{
+                        'p2':rooms[index].P2
+                    })
+                    client.broadcast.emit("updateData"+code,{
+                        'p2':rooms[index].P2
+                    })
                     break;
                 }
             }
@@ -162,6 +175,12 @@ socket.on('connection', (client) => {
             for(let index = 0; index < rooms.length ; index += 1){
                 if(code == rooms[index].code){
                     rooms[index].P1 += 1
+                    client.emit("updateData"+code,{
+                        'p1':rooms[index].P1
+                    })
+                    client.broadcast.emit("updateData"+code,{
+                        'p1':rooms[index].P1
+                    })
                     break;
                 }
             }
@@ -169,6 +188,12 @@ socket.on('connection', (client) => {
             for(let index = 0; index < rooms.length ; index += 1){
                 if(code == rooms[index].code){
                     rooms[index].E += 1
+                    client.emit("updateData"+code,{
+                        'e':rooms[index].E
+                    })
+                    client.broadcast.emit("updateData"+code,{
+                        'e':rooms[index].E
+                    })
                     break;
                 }
             }

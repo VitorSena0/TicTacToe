@@ -11,12 +11,26 @@
    <canvas height="300" width="300" style="border: solid;" id="canvas"></canvas>
   	<div id="x"></div>
   	<div id="y"></div>
-    <div>Play1:<div id="play1"></div></div>
-    <div>Play2:<div id="play2"></div></div>
+    <div>Code lobby:</div>
+    <div id="code"></div>
+    <div>Play1:
+      <div id="play1">
+        
+      </div>
+      <div>pontos:</div>
+      <p id="p1">0</p>
+    </div>
+
+    <div>Play2:
+      <div id="play2"></div>
+      <div>pontos:</div><p id="p2">0</p></div>
+      <div>Empates:</div><p id="empates">0</p>
+
   	<script src="/socket.io/socket.io.js"></script>
    	<script>
 		const code = `<%= Code %>`
     const name = `<%= Name %>`
+    document.getElementById("code").innerHTML = code
     let choice;
     let turn;
     let unlock = false;
@@ -49,6 +63,17 @@
           play2 = resp.player2
           document.getElementById('play2').innerHTML = play2
         }
+      }
+    })
+    socket.on("updateData"+code,(resp) => {
+      if(resp.p1){
+        document.getElementById('p1').innerHTML = resp.p1
+      }
+      if(resp.p2){
+        document.getElementById('p2').innerHTML = resp.p2
+      }
+      if(resp.e){
+        document.getElementById('empates').innerHTML = resp.e
       }
     })
   	</script>
