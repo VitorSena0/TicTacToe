@@ -64,6 +64,11 @@
           play2 = resp.player2
           document.getElementById('play2').innerHTML = play2
         }
+        if(unlock == false){
+          document.getElementById('info').innerHTML = "Wait for new player"
+        } else {
+          document.getElementById('info').innerHTML = " "
+        }
       }
     })
     socket.on("updateData"+code,(resp) => {
@@ -76,8 +81,7 @@
       if(resp.e){
         document.getElementById('empates').innerHTML = resp.e
       }
-    })
-    document.getElementById('info').innerHTML = "Wait for new player"
+    })    
   	</script>
   	<script type="text/javascript" src="/public/main2.js"></script>
 </body>

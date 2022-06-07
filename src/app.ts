@@ -242,7 +242,9 @@ socket.on('connection', (client) => {
                     "A8": null,
                     "A9": null,
                 }
+                /**WARNING - Esse armazenamento de valor muda a ordem de jogada**/
                // rooms[index].turn = true
+               /************************************************/
                 client.emit("reset"+code,{
                     "turn":rooms[index].turn,
                     "choice":rooms[index].blockChoice,
