@@ -1,0 +1,11 @@
+canvas{
+	display:flex;
+	justify-content:center;
+	border:solid 1px ;
+	margin:2cm auto auto auto;
+	background:white;
+}
+
+body{
+	background:#ffffc8;
+}
