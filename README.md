@@ -5,7 +5,7 @@
 
 jogo da velha feito em nodejs com API de acesso a banco de dados sqlite3 em python
 
-# Como Funciona
+# Como não Funciona
 
 O jogo funciona via online utilizando a biblioteca socket.io onde simutâneamente há a troca de dados entre os clientes e o servidor.Para jogar é necessário a criação de lobbys que possuem (obviamente) um limite de duas conexões simutâneas entre dois jogadores. Se algum dos jogadores sairem do lobby ou perder a conexão , automaticamente o cliente que permaneceu no lobby aguardará a entrada de outro player.
 
